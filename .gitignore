@@ -1,4 +1,4 @@
 node_modules
 package-lock.json
-test.html
-test2.html
+*.html
+.vscode

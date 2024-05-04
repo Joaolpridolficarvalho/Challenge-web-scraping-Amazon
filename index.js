@@ -2,7 +2,7 @@
 const axios = require('axios');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
-
+const fs = require('fs');
 function getPage(searchTerm) {
     return axios.get(`https://www.amazon.com.br/s?k=${searchTerm}`, {
         headers: {
@@ -20,28 +20,28 @@ async function extractImage(searchTerm) {
     const response = await getPage(searchTerm)
     const dom = new JSDOM(response.data)
     let imageProduct = []
-    for (let i = 0; i < dom.window.document.querySelectorAll('img').length; i++){
-        const image = dom.window.document.querySelectorAll('img')[i].src
+    let images = dom.window.document.getElementsByTagName('img');
+    for (let i = 0; i < images.length; i++){
+        const image = images[i].src
         imageProduct.push(image)
     }
     return imageProduct
 }
-
-async function extractText(searchTerm, tag) {
+async function extractText(searchTerm, className) {
     const response = await getPage(searchTerm)
     const dom = new JSDOM(response.data)
     let dataProduct = []
-    for (let i = 0; i < dom.window.document.querySelectorAll(tag).length; i++){
-        const data = dom.window.document.querySelectorAll(tag)[i].textContent
+    for (let i = 0; i < dom.window.document.getElementsByClassName(className).length; i++){
+        const data = dom.window.document.getElementsByClassName(className)[i].textContent
         dataProduct.push(data)
     }  
     return dataProduct
 }
 
 async function response() {
-    const productImage = await extractImage('iphone')
-    const productName = await extractText('iphone', '.a-size-mini.a-spacing-none.a-color-base.s-line-clamp-4')
-    const productReview = await extractText('iphone', '.a-size-base.s-underline-text')
+    const productImage = await extractImage('iphone', 's-image')
+    const productName = await extractText('iphone', 'a-size-medium a-color-base a-text-normal')
+    const productReview = await extractText('iphone', 'a-size-base s-underline-text')
     return {productImage, productName, productReview}
 }
 
@@ -49,7 +49,8 @@ async function organizeData() {
     const data = await response()
     let product = []
     for (let i = 0; i < data.productImage.length; i++){
-        product.push({image: data.productImage[i], name: data.productName[i], review: data.productReview[i]})
+        if (data.productName[i])
+            product.push({image: data.productImage[i], name: data.productName[i], review: data.productReview[i]})
     }
     return product
 }
@@ -57,9 +58,6 @@ async function organizeData() {
 organizeData().then((data) => {
     console.log(data)
 })
-
-
-
 
 
 
