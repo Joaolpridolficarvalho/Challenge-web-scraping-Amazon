@@ -2,9 +2,9 @@
   "name": "fatch-product",
   "version": "1.0.0",
   "description": "Script to fetch product at Amazon",
-  "main": "index.js",
+  "main": "API.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node API.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -14,6 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.8",
+    "express": "^4.19.2",
     "jsdom": "^24.0.0"
   }
+  
 }

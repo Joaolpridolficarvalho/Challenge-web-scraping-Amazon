@@ -1,4 +1,5 @@
 'use strict';
+
 const axios = require('axios');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
@@ -38,15 +39,15 @@ async function extractText(searchTerm, className) {
     return dataProduct
 }
 
-async function response() {
-    const productImage = await extractImage('iphone', 's-image')
-    const productName = await extractText('iphone', 'a-size-medium a-color-base a-text-normal')
-    const productReview = await extractText('iphone', 'a-size-base s-underline-text')
+async function response(searchTerm) {
+    const productImage = await extractImage(searchTerm, 's-image')
+    const productName = await extractText(searchTerm, 'a-size-medium a-color-base a-text-normal')
+    const productReview = await extractText(searchTerm, 'a-size-base s-underline-text')
     return {productImage, productName, productReview}
 }
 
-async function organizeData() {
-    const data = await response()
+async function organizeData(searchTerm) {
+    const data = await response(searchTerm)
     let product = []
     for (let i = 0; i < data.productImage.length; i++){
         if (data.productName[i])
@@ -55,11 +56,8 @@ async function organizeData() {
     return product
 }
 
-organizeData().then((data) => {
-    console.log(data)
-})
 
-
+module.exports = {organizeData}
 
 
 
