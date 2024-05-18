@@ -43,7 +43,8 @@ async function response(searchTerm) {
     const productImage = await extractImage(searchTerm, 's-image')
     const productName = await extractText(searchTerm, 'a-size-medium a-color-base a-text-normal')
     const productReview = await extractText(searchTerm, 'a-size-base s-underline-text')
-    return {productImage, productName, productReview}
+    const productStarsText = await extractText(searchTerm, 'a-icon-alt')
+    return {productImage, productName, productReview, productStarsText}
 }
 
 async function organizeData(searchTerm) {
@@ -51,7 +52,7 @@ async function organizeData(searchTerm) {
     let product = []
     for (let i = 0; i < data.productImage.length; i++){
         if (data.productName[i])
-            product.push({image: data.productImage[i], name: data.productName[i], review: data.productReview[i]})
+            product.push({image: data.productImage[i], name: data.productName[i], review: data.productReview[i], stars: data.productStarsText[i]})
     }
     return product
 }
